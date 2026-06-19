@@ -1,0 +1,10 @@
+[project]
+name = "erp-order-sync"
+version = "0.1.0"
+description = "CLI tool to normalise order files and send JSON payloads to an ERP system."
+authors = [{name = "Axentx"}]
+requires-python = ">=3.9"
+dependencies = []
+
+[project.scripts]
+erp-order-sync = "erp_order_sync:main"

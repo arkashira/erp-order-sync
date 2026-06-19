@@ -1,2 +1,6 @@
 # erp-order-sync
-axentx product · An AI-powered order automation tool that integrates with ERP systems to streamline order data entry from various sources and formats
+
+A tiny command‑line utility that reads an order file (CSV or JSON), normalises the data
+into a canonical JSON structure and writes it to a file ready to be sent to an ERP API.
+
+## Installation
