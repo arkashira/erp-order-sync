@@ -1,10 +1,14 @@
-[project]
-name = "erp-order-sync"
-version = "0.1.0"
-description = "CLI tool to normalise order files and send JSON payloads to an ERP system."
-authors = [{name = "Axentx"}]
-requires-python = ">=3.9"
-dependencies = []
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
 
-[project.scripts]
-erp-order-sync = "erp_order_sync:main"
+[tool.poetry]
+name = "erp-order-sync"
+version = "1.0.0"
+description = "ERP Order Sync"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.5"
