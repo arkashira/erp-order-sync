@@ -1,44 +1,34 @@
-from erp_order_sync import ErpOrderSync, ErpSystem, ExternalSource, Order
+import pytest
+from erp_order_sync import ERPOrderSync, ConnectionError
+import logging
+from unittest.mock import patch
 
-def test_sync_orders():
-    external_source = ExternalSource([
-        {'id': 1, 'customer_name': 'John Doe', 'order_date': '2022-01-01', 'total': 100.0},
-        {'id': 2, 'customer_name': 'Jane Doe', 'order_date': '2022-01-02', 'total': 200.0}
-    ])
+@pytest.fixture
+def erp_order_sync():
+    return ERPOrderSync()
 
-    erp_system = ErpSystem()
-    erp_order_sync = ErpOrderSync(erp_system, external_source)
+def test_send_notification(erp_order_sync, caplog):
+    error = ConnectionError("Test error", {"detail": "Test detail"})
+    erp_order_sync.send_notification(error)
+    assert "Sending notification" in caplog.text
 
-    synced_orders = erp_order_sync.sync_orders()
-    assert len(synced_orders) == 2
+def test_log_error(erp_order_sync, caplog):
+    error = ConnectionError("Test error", {"detail": "Test detail"})
+    erp_order_sync.log_error(error)
+    assert "Logged error" in caplog.text
 
-    erp_system.add_order(synced_orders[0])
-    synced_orders = erp_order_sync.sync_orders()
-    assert len(synced_orders) == 1
+def test_handle_connection_error(erp_order_sync, caplog):
+    error_message = "Test error"
+    error_details = {"detail": "Test detail"}
+    erp_order_sync.handle_connection_error(error_message, error_details)
+    assert "Sending notification" in caplog.text
+    assert "Logged error" in caplog.text
 
-def test_sync_orders_empty_external_source():
-    external_source = ExternalSource([])
-    erp_system = ErpSystem()
-    erp_order_sync = ErpOrderSync(erp_system, external_source)
-
-    synced_orders = erp_order_sync.sync_orders()
-    assert len(synced_orders) == 0
-
-def test_sync_orders_empty_erp_system():
-    external_source = ExternalSource([
-        {'id': 1, 'customer_name': 'John Doe', 'order_date': '2022-01-01', 'total': 100.0},
-        {'id': 2, 'customer_name': 'Jane Doe', 'order_date': '2022-01-02', 'total': 200.0}
-    ])
-
-    erp_system = ErpSystem()
-    erp_order_sync = ErpOrderSync(erp_system, external_source)
-
-    synced_orders = erp_order_sync.sync_orders()
-    assert len(synced_orders) == 2
-
-def test_order_mapping():
-    order = Order(1, 'John Doe', '2022-01-01', 100.0)
-    assert order.id == 1
-    assert order.customer_name == 'John Doe'
-    assert order.order_date == '2022-01-01'
-    assert order.total == 100.0
+def test_get_logged_errors(erp_order_sync):
+    error_message = "Test error"
+    error_details = {"detail": "Test detail"}
+    erp_order_sync.handle_connection_error(error_message, error_details)
+    logged_errors = erp_order_sync.get_logged_errors()
+    assert len(logged_errors) == 1
+    assert logged_errors[0].error_message == error_message
+    assert logged_errors[0].error_details == error_details

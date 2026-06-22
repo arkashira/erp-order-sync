@@ -1,12 +1,9 @@
 # ERP Order Sync
-
-ERP Order Sync is a Python project that synchronizes orders between an ERP system and an external source.
+A Python project for handling connection errors and sending notifications.
 
 ## Usage
-
-1. Create an instance of the `ErpOrderSync` class, passing in an `ErpSystem` and an `ExternalSource`.
-2. Call the `sync_orders` method to synchronize orders between the two systems.
+1. Create an instance of the `ERPOrderSync` class.
+2. Call the `handle_connection_error` method to send a notification and log the error.
 
 ## Testing
-
 Run the tests using `pytest`.
